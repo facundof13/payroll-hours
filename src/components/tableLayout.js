@@ -6,6 +6,10 @@ export default class TableLayout extends React.Component {
     super(props)
   }
 
+  receiveHoursInDay(hours) {
+    console.log(hours)
+  }
+
   render() {
     return (
       <table style={{ width: 100 + '%' }}>
@@ -20,7 +24,7 @@ export default class TableLayout extends React.Component {
           </thead>
           <tbody>
           {this.props.dateArr.map(date => (
-              <TimeRow key={date} date={date} />
+              <TimeRow key={date} sendHours={this.receiveHoursInDay} date={date} />
         ))}
           </tbody>
         </table>
