@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/payroll-hours/static/css/main.982be2bf.chunk.css",
+    "main.js": "/payroll-hours/static/js/main.b2899859.chunk.js",
+    "main.js.map": "/payroll-hours/static/js/main.b2899859.chunk.js.map",
+    "runtime-main.js": "/payroll-hours/static/js/runtime-main.166d29d0.js",
+    "runtime-main.js.map": "/payroll-hours/static/js/runtime-main.166d29d0.js.map",
+    "static/css/2.b90ce945.chunk.css": "/payroll-hours/static/css/2.b90ce945.chunk.css",
+    "static/js/2.adb4960c.chunk.js": "/payroll-hours/static/js/2.adb4960c.chunk.js",
+    "static/js/2.adb4960c.chunk.js.map": "/payroll-hours/static/js/2.adb4960c.chunk.js.map",
+    "index.html": "/payroll-hours/index.html",
+    "precache-manifest.f3dc67c144a2842ba99d1c6d26b5b805.js": "/payroll-hours/precache-manifest.f3dc67c144a2842ba99d1c6d26b5b805.js",
+    "service-worker.js": "/payroll-hours/service-worker.js",
+    "static/css/2.b90ce945.chunk.css.map": "/payroll-hours/static/css/2.b90ce945.chunk.css.map",
+    "static/css/main.982be2bf.chunk.css.map": "/payroll-hours/static/css/main.982be2bf.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.166d29d0.js",
+    "static/css/2.b90ce945.chunk.css",
+    "static/js/2.adb4960c.chunk.js",
+    "static/css/main.982be2bf.chunk.css",
+    "static/js/main.b2899859.chunk.js"
+  ]
+}
