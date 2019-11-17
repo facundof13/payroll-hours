@@ -1,6 +1,16 @@
 import React from "react";
 import moment from "moment";
 
+const weekdays = {
+  0: 'Sunday',
+  1: 'Monday',
+  2: 'Tuesday',
+  3: 'Wednesday',
+  4: 'Thursday',
+  5: 'Friday',
+  6: 'Saturday'
+}
+
 export default class TimeRow extends React.Component {
   constructor(props) {
     super(props);
@@ -11,13 +21,13 @@ export default class TimeRow extends React.Component {
       inAMorPM: "AM",
       outHour: "",
       outMinute: "",
-      outAMorPM: "AM",
+      outAMorPM: "PM",
       breakStartHour: "",
       breakStartMinute: "",
-      breakStartAMorPM: "AM",
+      breakStartAMorPM: "PM",
       breakEndHour: "",
       breakEndMinute: "",
-      breakEndAMorPM: "AM"
+      breakEndAMorPM: "PM"
     };
     this.handleChange = this.handleChange.bind(this);
     this.fixText = this.fixText.bind(this);
@@ -124,7 +134,7 @@ export default class TimeRow extends React.Component {
   render() {
     return (
       <tr>
-        <td>{this.props.date}</td>
+        <td>{weekdays[moment(this.props.date).day()] + ', ' + this.props.date}</td>
         <td>
           <input
             type="text"
@@ -233,9 +243,8 @@ export default class TimeRow extends React.Component {
         </td>
         <td>
           {this.props.hours !== "" ? (
-            'Hours:' + ' ' + this.props.hours + '\nMinutes:' + ' ' + this.props.minutes
-
-          ) : ''}
+            this.props.hours + ' hours and ' + this.props.minutes + ' minutes'
+        ) : ''}
         </td>
       </tr>
     );

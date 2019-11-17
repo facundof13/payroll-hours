@@ -122,18 +122,23 @@ export default class Calculator extends React.Component {
           dateArr={this.state.dateArr}
           adjustArray={this.adjustArray}
         />
-        {obj.totalhours > 0
-          ? "Total Hours: " +
-            obj.totalhours +
-            " Total Minutes: " +
-            obj.totalMinutes
-          : ""}
+        {obj.totalhours > 0 ? (
+          <div className="totalPay">
+            <p>
+              {obj.totalhours + " hours and " + obj.totalMinutes + " minutes"}
+            </p>
+          </div>
+        ) : (
+          ""
+        )}
         <p>
           Total Pay (before taxes):{" "}
-          {(
-            obj.totalhours * this.state.rate +
-            obj.totalMinutes * (this.state.rate / 60)
-          ).toLocaleString("en-US", { style: "currency", currency: "USD" })}
+          <strong>
+            {(
+              obj.totalhours * this.state.rate +
+              obj.totalMinutes * (this.state.rate / 60)
+            ).toLocaleString("en-US", { style: "currency", currency: "USD" })}
+          </strong>
         </p>
       </div>
     );

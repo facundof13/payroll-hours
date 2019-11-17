@@ -3,10 +3,10 @@ import TimeRow from "./timeRow";
 
 export default class TableLayout extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     console.log(this.props);
 
-    this.receiveHoursInDay = this.receiveHoursInDay.bind(this)
+    this.receiveHoursInDay = this.receiveHoursInDay.bind(this);
   }
 
   receiveHoursInDay(hours) {
@@ -17,28 +17,30 @@ export default class TableLayout extends React.Component {
 
   render() {
     return (
-      <table style={{ width: 100 + "%" }}>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>In</th>
-            <th>Out</th>
-            <th>Break</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.props.dateArr.map(info => (
-            <TimeRow
-              key={info.date}
-              sendHours={this.receiveHoursInDay}
-              date={info.date}
-              hours={info.hours}
-              minutes={info.minutes}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className='table-container'>
+        <table className="greyGridTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>In time</th>
+              <th>Out time</th>
+              <th>Break start and end times</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.dateArr.map(info => (
+              <TimeRow
+                key={info.date}
+                sendHours={this.receiveHoursInDay}
+                date={info.date}
+                hours={info.hours}
+                minutes={info.minutes}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }
