@@ -1,7 +1,5 @@
 import React from "react";
-import DatePicker from "react-datepicker";
 import moment from "moment";
-import { tsIndexSignature } from "@babel/types";
 
 export default class TimeRow extends React.Component {
   constructor(props) {
@@ -19,8 +17,7 @@ export default class TimeRow extends React.Component {
       breakStartAMorPM: "AM",
       breakEndHour: "",
       breakEndMinute: "",
-      breakEndAMorPM: "AM",
-      hadBreak: true,
+      breakEndAMorPM: "AM"
     };
     this.handleChange = this.handleChange.bind(this);
     this.fixText = this.fixText.bind(this);
@@ -28,14 +25,19 @@ export default class TimeRow extends React.Component {
 
   handleChange(e) {
     e.persist();
-    if (e.target.name === "hadBreak") {
-      this.setState(function() {
-        return { [e.target.name]: e.target.checked };
-      });
-    } else if (e.target.value.length <= 2) {
-      this.setState(function() {
-        return { [e.target.name]: e.target.value };
-      });
+    if (e.target.value.length <= 2) {
+      this.setState(
+        function() {
+          return {
+            [e.target.name]: e.target.value
+          };
+        },
+        () => {
+          if (this.checkIfAllSatisfied()) {
+            this.separateHours();
+          }
+        }
+      );
     }
   }
 
@@ -44,28 +46,20 @@ export default class TimeRow extends React.Component {
     if (e.target.value.length == 1) {
       this.setState(function() {
         let newNumber = `0${e.target.value}`;
-        return { [e.target.name]: newNumber };
+        return {
+          [e.target.name]: newNumber
+        };
       });
     }
   }
 
   checkIfAllSatisfied() {
-    if (
+    return (
       this.state.inHour !== "" &&
       this.state.inMinute !== "" &&
-      this.state.inAMorPM !== "" &&
       this.state.outHour !== "" &&
-      this.state.outMinute !== "" &&
-      this.state.outAMorPM !== "" &&
-      this.state.breakStartHour !== "" &&
-      this.state.breakStartMinute !== "" &&
-      this.state.breakStartAMorPM !== "" &&
-      this.state.breakEndHour !== "" &&
-      this.state.breakEndMinute !== "" &&
-      this.state.breakEndAMorPM !== ""
-    ) {
-      return true;
-    }
+      this.state.outMinute !== ""
+    );
   }
 
   separateHours() {
@@ -85,44 +79,49 @@ export default class TimeRow extends React.Component {
       outDate.add(12, "hours");
     }
 
-    //break start time
-    let breakStartDate = moment(this.props.date);
-    breakStartDate.hour(this.state.breakStartHour);
-    breakStartDate.minute(this.state.breakStartMinute);
-    if (this.state.breakStartAMorPM === "PM") {
-      breakStartDate.add(12, "hours");
-    }
+    console.log(this.state.breakStartMinute !== "" && this.state.breakEndMinute !== "") 
+    if (this.state.breakStartMinute !== "" && this.state.breakEndMinute !== "") {
+      //break start time
+      let breakStartDate = moment(this.props.date);
+      breakStartDate.hour(this.state.breakStartHour);
+      breakStartDate.minute(this.state.breakStartMinute);
+      if (this.state.breakStartAMorPM === "PM") {
+        breakStartDate.add(12, "hours");
+      }
 
-    //break end time
-    let breakEndDate = moment(this.props.date);
-    breakEndDate.hour(this.state.breakEndHour);
-    breakEndDate.minute(this.state.breakEndMinute);
-    if (this.state.breakEndAMorPM === "PM") {
-      breakEndDate.add(12, "hours");
+      //break end time
+      let breakEndDate = moment(this.props.date);
+      breakEndDate.hour(this.state.breakEndHour);
+      breakEndDate.minute(this.state.breakEndMinute);
+      if (this.state.breakEndAMorPM === "PM") {
+        breakEndDate.add(12, "hours");
+      }
+      // console.log(`Break Start time: ${breakStartDate.format("LT")}`);
+      // console.log(`Break End time: ${breakEndDate.format("LT")}`);
+      this.findHoursWorked(inDate, outDate, breakStartDate, breakEndDate);
+    } else {
+      this.findHoursWorked(inDate, outDate, 0, 0);
     }
-
-    this.findHoursWorked(inDate, outDate, breakStartDate, breakEndDate);
 
     // console.log(`In time: ${inDate.format("LT")}`);
     // console.log(`Out time: ${outDate.format("LT")}`);
-    // console.log(`Break Start time: ${breakStartDate.format("LT")}`);
-    // console.log(`Break End time: ${breakEndDate.format("LT")}`);
   }
 
   findHoursWorked(inDate, outDate, breakStartDate, breakEndDate) {
     let mainHours = outDate.diff(inDate) / 3600000;
-    let breakHours = breakEndDate.diff(breakStartDate) / 3600000;
-    let totalHours = mainHours - breakHours;
-    console.log({
-      totalHours: Math.floor(totalHours),
-      totalMinutes: (totalHours - Math.floor(totalHours)) * 60
+    if (breakStartDate && breakEndDate) {
+      let breakHours = breakEndDate.diff(breakStartDate) / 3600000;
+      mainHours -= breakHours
+    }
+
+    this.props.sendHours({
+      date: this.props.date,
+      hours: Math.floor(mainHours),
+      minutes: Math.floor((mainHours - Math.floor(mainHours)) * 60)
     });
   }
 
   render() {
-    if (this.checkIfAllSatisfied()) {
-      this.separateHours();
-    }
     return (
       <tr>
         <td>{this.props.date}</td>
@@ -231,12 +230,12 @@ export default class TimeRow extends React.Component {
             <option value="AM">AM</option>
             <option value="PM">PM</option>
           </select>
-          <label>Check if no break</label>
-          <input
-            type="checkbox"
-            name="hadBreak"
-            onChange={this.handleChange}
-          ></input>
+        </td>
+        <td>
+          {this.props.hours !== "" ? (
+            'Hours:' + ' ' + this.props.hours + '\nMinutes:' + ' ' + this.props.minutes
+
+          ) : ''}
         </td>
       </tr>
     );

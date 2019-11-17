@@ -11,11 +11,15 @@ export default class Calculator extends React.Component {
       rate: 13,
       firstDate: null,
       secondDate: null,
-      dateArr: []
+      dateArr: [],
+      sumHours: 0,
+      sumMinutes: 0
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
+    this.adjustArray = this.adjustArray.bind(this);
+    this.calculateTotalHours = this.calculateTotalHours.bind(this);
   }
 
   handleChange(e) {
@@ -24,9 +28,15 @@ export default class Calculator extends React.Component {
 
   handleDateChange(e, which) {
     // do date checking in datePickers component
-    this.setState({ [which]: e }, () => {
-      this.findDifferenceOfDays();
-    });
+    this.setState(
+      {
+        [which]: e,
+        dateArr: []
+      },
+      () => {
+        this.findDifferenceOfDays();
+      }
+    );
   }
 
   findDifferenceOfDays() {
@@ -54,12 +64,52 @@ export default class Calculator extends React.Component {
   populateArray() {
     let dateArr = [];
     for (let i = 0; i < this.state.daysDifference; i++) {
-      dateArr.push(moment(this.state.firstDate).add(i, "d").format('MMMM DD YYYY'));
+      dateArr.push({
+        date: moment(this.state.firstDate)
+          .add(i, "d")
+          .format("MMMM DD YYYY"),
+        hours: "",
+        minutes: ""
+      });
+      dateArr.sort((a, b) => {
+        return moment(a.date).isAfter(moment(b.date));
+      });
     }
-    this.setState({dateArr: dateArr})
+    this.setState({ dateArr: dateArr });
+  }
+
+  adjustArray(hours) {
+    console.log(hours);
+    let arr = [...this.state.dateArr];
+    let newArr = [...arr.filter(item => item.date !== hours.date), hours];
+
+    newArr.sort((a, b) => {
+      return moment(a.date).isAfter(moment(b.date));
+    });
+    this.setState(() => ({
+      dateArr: [...newArr]
+    }));
+  }
+
+  calculateTotalHours() {
+    let sumHours = 0;
+    let sumMinutes = 0;
+    this.state.dateArr.map(item => {
+      if (item.hours) {
+        sumHours += Number(item.hours);
+      }
+      if (item.minutes) {
+        sumMinutes += Number(item.minutes);
+      }
+    });
+    let totalHours = sumHours + Math.floor(sumMinutes / 60);
+    let totalMinutes = sumMinutes % 60;
+    console.log(`Hours: ${totalHours} Minutes: ${totalMinutes}`);
+    return { totalhours: totalHours, totalMinutes: totalMinutes };
   }
 
   render() {
+    let obj = this.calculateTotalHours();
     return (
       <div>
         <HourlyRate onRateChange={this.handleChange} rate={this.state.rate} />
@@ -68,7 +118,23 @@ export default class Calculator extends React.Component {
           secondDate={this.state.secondDate}
           onDateChange={this.handleDateChange}
         />
-        <TableLayout dateArr={this.state.dateArr} />
+        <TableLayout
+          dateArr={this.state.dateArr}
+          adjustArray={this.adjustArray}
+        />
+        {obj.totalhours > 0
+          ? "Total Hours: " +
+            obj.totalhours +
+            " Total Minutes: " +
+            obj.totalMinutes
+          : ""}
+        <p>
+          Total Pay (before taxes):{" "}
+          {(
+            obj.totalhours * this.state.rate +
+            obj.totalMinutes * (this.state.rate / 60)
+          ).toLocaleString("en-US", { style: "currency", currency: "USD" })}
+        </p>
       </div>
     );
   }
