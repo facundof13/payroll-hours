@@ -12,11 +12,13 @@ export default class DatePickers extends React.Component {
       <div>
         <label>Enter a starting payroll date:</label>
         <DatePicker
+          todayButton="Today"
           selected={this.props.firstDate}
           onChange={(e) => { this.props.onDateChange(e, 'firstDate') }}
         />
         <label>Enter an ending date:</label>
         <DatePicker
+          todayButton="Today"
           selected={this.props.secondDate}
           onChange={(e) => { this.props.onDateChange(e, 'secondDate') }}
       />

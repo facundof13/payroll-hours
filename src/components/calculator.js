@@ -1,8 +1,8 @@
 import React from "react";
 import HourlyRate from "./hourlyRate";
 import DatePickers from "./datePickers";
-import TimeRow from "./timeRow";
 import moment from "moment";
+import TableLayout from "./tableLayout";
 export default class Calculator extends React.Component {
   constructor(props) {
     super(props);
@@ -60,7 +60,6 @@ export default class Calculator extends React.Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div>
         <HourlyRate onRateChange={this.handleChange} rate={this.state.rate} />
@@ -69,9 +68,7 @@ export default class Calculator extends React.Component {
           secondDate={this.state.secondDate}
           onDateChange={this.handleDateChange}
         />
-        {this.state.dateArr.map(date => (
-          <TimeRow key={date} date={date} />
-        ))}
+        <TableLayout dateArr={this.state.dateArr} />
       </div>
     );
   }
